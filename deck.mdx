@@ -1,4 +1,6 @@
-export { swiss as theme } from 'mdx-deck/themes'
+export { default as theme } from './theme'
+import { FullScreenCode } from 'mdx-deck/layouts'
+import { Image } from 'mdx-deck'
 
 <div style={{ textAlign: 'center' }}>
   <img src="https://graphql.org/img/logo.svg" style={{ width: '40%' }} />
@@ -9,14 +11,164 @@ export { swiss as theme } from 'mdx-deck/themes'
 </div>
 
 ---
+# GraphQL, Explained
 
-- Ask for exactly what you need
-- Get many resources with a single request
-- Describe what's possible with a type system - DOCS
-- No API versioning
+```notes
+- Like writing SQL, but to a JSON endpoint
+- Open-source, built by Facebook
+```
+---
+> Ask for what you need, get exactly that
+
+```notes
+- Most REST APIs return the entire record (or records), when all you really want is a title
+```
+---
+## Describe your data
+
+```graphql
+type Project {
+  name: String
+  tagline: String
+  contributors: [User]
+}
+```
+
+```notes
+- Define the type with all possible fields
+- This allows GraphQL to be self-documenting
+- Tools can introspect which fields are available
+```
+---
+## Ask for what you want
+
+```graphql
+{
+  project(name: "GraphQL") {
+    tagline
+  }
+}
+```
+
+```notes
+- I want the project
+- Named graphql
+- But I only need the tagline
+```
+---
+## Get predictable results
+
+```json
+{
+  "project": {
+    "tagline": "A query language for APIs"
+  }
+}
+```
+---
+# More cool things
+---
+## Get many resources with a single request
+
+```graphql
+{
+  hero {
+    name
+    friends {
+      homeWorld {
+        name
+        climate
+      }
+    }
+  }
+}
+```
 
 ---
+## Code as Documentation
 
+- types and fields, not endpoints
+- all data from a single endpoint
+- clear and helpful errors
+- avoid writing manual parsing code
+---
+<Image src="https://images-moccllmoqf.now.sh/graphql_1.png" />
+---
+## No API versioning
+
+- add new fields and types without impacting existing queries
+- aging fields can be deprecated and hidden from tools
+- give apps access to new features and encourage cleaner, more maintainable server code
+---
+# We're not done yet...
+---
+# Directives
+
+```graphql
+query Hero($episode: Episode, $withFriends: Boolean!) {
+  hero(episode: $episode) {
+    name
+    friends @include(if: $withFriends) {
+      name
+    }
+  }
+}
+```
+---
+# Fragments
+---
+export default FullScreenCode
+
+```graphql
+{
+  leftComparison: hero(episode: EMPIRE) {
+    ...comparisonFields
+  }
+  rightComparison: hero(episode: JEDI) {
+    ...comparisonFields
+  }
+}
+​
+fragment comparisonFields on Character {
+  name
+  appearsIn
+  friends {
+    name
+  }
+}
+```
+---
+# Mutations
+
+```graphql
+mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
+  createReview(episode: $ep, review: $review) {
+    stars
+    commentary
+  }
+}
+```
+```json
+{
+  "ep": "JEDI",
+  "review": {
+    "stars": 5,
+    "commentary": "This is a great movie!"
+  }
+}
+```
+---
+```json
+{
+  "data": {
+    "createReview": {
+      "stars": 5,
+      "commentary": "This is a great movie!"
+    }
+  }
+}
+```
+---
 # Resources
 
 - https://graphql.org/
