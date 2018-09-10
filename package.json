@@ -9,6 +9,6 @@
     "pdf": "mdx-deck pdf deck.mdx"
   },
   "devDependencies": {
-    "mdx-deck": "^1.7.3"
+    "mdx-deck": "1.5.15"
   }
 }
